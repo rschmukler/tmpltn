@@ -1,14 +1,14 @@
 {
   "name": "tmpltn",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "In directory simple template generator",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "preferGlobal": "true",
   "repository": {
     "type": "git",
     "url": "git://github.com/rschmukler/tmpltn.git"
+  },
+  "bin": {
+    "tmpltn": "bin/tmpltn"
   },
   "keywords": [
     "template",
