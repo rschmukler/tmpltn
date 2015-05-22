@@ -27,7 +27,7 @@ describe('Models::{{capitalCamel:name}}', function() {
 
 Creates files:
 
-`/lib/models/person-model.js`
+`lib/models/person-model.js`
 ```js
 class Person {
 }
@@ -57,7 +57,8 @@ Omit `vars` to see available variables for a given file.
 
 ```
 tmpltn gen Model
-
+```
+```
 Possible variables: name
 ```
 
