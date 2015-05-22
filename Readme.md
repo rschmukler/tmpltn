@@ -25,6 +25,20 @@ describe('Models::{{capitalCamel:name}}', function() {
 });
 ````
 
+Creates files:
+
+`/lib/models/person-model.js`
+```js
+class Person {
+}
+```
+
+`test/models/person-model-spec.js`
+```js
+var expect = require('expect.js');
+describe('Models::Person', function() {
+});
+```
 ## Using Tmpltn
 
 #### ls
