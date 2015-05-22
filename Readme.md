@@ -10,10 +10,7 @@ npm -g install tmpltn
 
 ## Example Usage
 
-```
-tmpltn gen Model name=Person
-```
-
+1) Define a template file
 `templates/model.tmpltn.js`
 ```js
 /**
@@ -27,11 +24,18 @@ class {{capitalize:camel:name}} {
 
 // TmpltnOutput: test/models/{{ train:name }}-model-spec.js
 var expect = require('expect.js');
-describe('Models::{{capitalCamel:name}}', function() {
+describe('Models::{{capitalize:camel:name}}', function() {
 });
 ````
 
-Creates files:
+2) Run tmpltn
+```
+tmpltn gen Model name=Person
+```
+
+3) Profit
+
+tmpltn creates files:
 
 `lib/models/person-model.js`
 ```js
