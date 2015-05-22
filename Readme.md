@@ -2,6 +2,12 @@
 
 Super lightweight in-directory project scaffolding
 
+## Installation
+
+```
+npm -g install tmpltn
+```
+
 ## Example Usage
 
 ```
