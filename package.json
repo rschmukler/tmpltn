@@ -19,5 +19,12 @@
   "bugs": {
     "url": "https://github.com/rschmukler/tmpltn/issues"
   },
-  "homepage": "https://github.com/rschmukler/tmpltn#readme"
+  "homepage": "https://github.com/rschmukler/tmpltn#readme",
+  "dependencies": {
+    "batch": "^0.5.2",
+    "chalk": "^1.0.0",
+    "cli-table": "^0.3.1",
+    "commander": "^2.8.1",
+    "glob": "^5.0.9"
+  }
 }

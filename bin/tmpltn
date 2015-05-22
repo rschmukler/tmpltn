@@ -1,0 +1,56 @@
+#!/usr/bin/env node
+
+var program = require('commander');
+var path = require('path');
+var fs = require('fs');
+var chalk = require('chalk');
+var glob = require('glob');
+
+var Table = require('cli-table');
+var Batch = require('batch');
+
+var Template = require('../lib/template');
+
+program
+  .description('The in-directory template generator you always wanted');
+
+program
+  .command('ls')
+  .description('list available templates')
+  .option('-d, --directory', 'Directory to source templates from')
+  .action(function(opts) {
+    opts.directory = opts.directory || 'templates/';
+
+    if (!fs.existsSync(path.resolve(opts.directory))) {
+      throwError('Could not find template directory: ' + opts.directory);
+    }
+
+    glob(path.join(opts.directory, '**', '*.tmpltn.*'), function(err, files) {
+      if (err) return throwError(err);
+      var batch = new Batch();
+      var templates = files.map(function(p) {
+        var t = new Template(p);
+        batch.push(t.open.bind(t));
+        return t;
+      });
+      batch.end(function(e) {
+        if (e) return throwError(e);
+        var table = new Table({
+          head: ['name', 'description', 'path']
+        });
+        templates.forEach(function(t) {
+          table.push([t.name, t.description, t.shortPath]);
+        });
+        console.log(table.toString());
+      });
+    });
+  });
+
+program.parse(process.argv);
+
+function throwError(err) {
+  var errMessage = '[' + chalk.red('error') + '] ' + (err.message || err);
+  console.error(errMessage);
+  if (err.stack) console.error(err.stack);
+  process.exit(1);
+}
