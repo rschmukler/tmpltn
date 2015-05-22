@@ -62,6 +62,10 @@ program
 
 program.parse(process.argv);
 
+if (process.argv.length == 2) {
+  program.help();
+}
+
 function varsToObj(vars) {
   var res = {};
   vars.forEach(function(v) {
