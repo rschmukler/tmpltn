@@ -13,7 +13,7 @@ var Template = require('../lib/template');
 
 program
   .description('The in-directory template generator you always wanted')
-  .option('-d, --directory', 'Directory to source templates from');
+  .option('-d, --directory [dir]', 'Directory to source templates from');
 
 program
   .command('ls')
@@ -34,7 +34,7 @@ program
 program
   .command('gen [name] [vars...]')
   .description('generate a template')
-  .option('-o, --output-path', 'Overwrite output path')
+  .option('-o, --output-path [path]', 'Overwrite output path')
   .action(function(name, vars, opts) {
     loadTemplates(function(err, templates) {
       if (err) throwError(err);
