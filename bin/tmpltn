@@ -11,9 +11,11 @@ var Batch = require('batch');
 
 var Template = require('../lib/template');
 
+console.log("");
+
 program
   .description('The in-directory template generator you always wanted')
-  .option('-d, --directory [dir]', 'Directory to source templates from');
+  .option('-d, --directory [dir]', 'Directory to source templates from (default: templates/)');
 
 program
   .command('ls')
@@ -44,13 +46,14 @@ program
 
       if (!vars.length) {
         var possibleVars = template.getVars();
-        console.log(chalk.green("Possible variables: ") + possibleVars.join(', '));
-        process.exit(0);
-      } else {
-        template.generate(varsToObj(vars), opts.outputPath, function(err) {
-          if (err) return throwError(err);
-        });
+        if (possibleVars.length) {
+          console.log(chalk.green("Possible variables: ") + possibleVars.join(', '));
+          process.exit(0);
+        }
       }
+      template.generate(varsToObj(vars), opts.outputPath, function(err) {
+        if (err) return throwError(err);
+      });
     });
   }).on('--help', function() {
     console.log("Examples:");
