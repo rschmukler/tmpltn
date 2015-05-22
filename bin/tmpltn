@@ -12,45 +12,87 @@ var Batch = require('batch');
 var Template = require('../lib/template');
 
 program
-  .description('The in-directory template generator you always wanted');
+  .description('The in-directory template generator you always wanted')
+  .option('-d, --directory', 'Directory to source templates from');
 
 program
   .command('ls')
   .description('list available templates')
-  .option('-d, --directory', 'Directory to source templates from')
-  .action(function(opts) {
-    opts.directory = opts.directory || 'templates/';
-
-    if (!fs.existsSync(path.resolve(opts.directory))) {
-      throwError('Could not find template directory: ' + opts.directory);
-    }
-
-    glob(path.join(opts.directory, '**', '*.tmpltn.*'), function(err, files) {
-      if (err) return throwError(err);
-      var batch = new Batch();
-      var templates = files.map(function(p) {
-        var t = new Template(p);
-        batch.push(t.open.bind(t));
-        return t;
+  .action(function() {
+    loadTemplates(function(err, templates) {
+      if (err) throwError(err);
+      var table = new Table({
+        head: ['name', 'description', 'path']
       });
-      batch.end(function(e) {
-        if (e) return throwError(e);
-        var table = new Table({
-          head: ['name', 'description', 'path']
-        });
-        templates.forEach(function(t) {
-          table.push([t.name, t.description, t.shortPath]);
-        });
-        console.log(table.toString());
+      templates.forEach(function(t) {
+        table.push([t.name, t.description, t.shortPath]);
       });
+      console.log(table.toString());
     });
+  });
+
+program
+  .command('gen [name] [vars...]')
+  .description('generate a template')
+  .option('-o, --output-path', 'Overwrite output path')
+  .action(function(name, vars, opts) {
+    loadTemplates(function(err, templates) {
+      if (err) throwError(err);
+      var index = templates.map(function(t) { return t.name; }).indexOf(name);
+      if (index == -1) throwError('Could not find template: ' + name);
+      var template = templates[index];
+
+      if (!vars.length) {
+        var possibleVars = template.getVars();
+        console.log(chalk.green("Possible variables: ") + possibleVars.join(', '));
+        process.exit(0);
+      } else {
+        template.generate(varsToObj(vars), opts.outputPath, function(err) {
+          if (err) return throwError(err);
+        });
+      }
+    });
+  }).on('--help', function() {
+    console.log("Examples:");
+    console.log('  tmpltn gen Person name="Bob Johnson" age=25');
   });
 
 program.parse(process.argv);
 
+function varsToObj(vars) {
+  var res = {};
+  vars.forEach(function(v) {
+    v = v.split('=');
+    res[v[0]] = v[1];
+  });
+  return res;
+}
+
+function loadTemplates(cb) {
+  program.directory = program.directory || 'templates/';
+
+  if (!fs.existsSync(path.resolve(program.directory))) {
+    return cb(new Error('Could not find template directory: ' + program.directory));
+  }
+
+  glob(path.join(program.directory, '**', '*.tmpltn.*'), function(err, files) {
+    if (err) return cb(err);
+    var batch = new Batch();
+    var templates = files.map(function(p) {
+      var t = new Template(p);
+      batch.push(t.open.bind(t));
+      return t;
+    });
+    batch.end(function(e) {
+      if (e) return cb(e);
+      cb(null, templates);
+    });
+  });
+}
+
 function throwError(err) {
-  var errMessage = '[' + chalk.red('error') + '] ' + (err.message || err);
+  var errMessage = '[' + chalk.red(err.type || 'Error') + '] ' + (err.message || err);
   console.error(errMessage);
-  if (err.stack) console.error(err.stack);
+  if (!err.type && err.stack) console.error(err.stack);
   process.exit(1);
 }

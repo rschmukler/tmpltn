@@ -22,9 +22,11 @@
   "homepage": "https://github.com/rschmukler/tmpltn#readme",
   "dependencies": {
     "batch": "^0.5.2",
+    "camelcase": "^1.1.0",
     "chalk": "^1.0.0",
     "cli-table": "^0.3.1",
     "commander": "^2.8.1",
-    "glob": "^5.0.9"
+    "glob": "^5.0.9",
+    "snake-case": "^1.1.1"
   }
 }
