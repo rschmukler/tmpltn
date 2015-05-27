@@ -75,7 +75,12 @@ Possible variables: name
 You may also overwrite the default output directory by specifying `--output-path`.
 
 ```
-tmpltn gen --output-path customDir/ Model name="Bob"
+tmpltn gen --output-path customDir/ Model name="Person"
+```
+
+```
+[Created] - customDir/person-model.js
+[Created] - customDir/person-model-spec.js
 ```
 
 ## Template Files
